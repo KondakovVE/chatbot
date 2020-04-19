@@ -4,3 +4,4 @@
 chatbot/__pycache__/
 pyvenv.cfg
 test_bot.py
+dist/
