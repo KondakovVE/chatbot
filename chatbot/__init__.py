@@ -256,7 +256,12 @@ class Bot:
         pass
 
     def send_message(self, chat_id, text, when=None, new_state=None, new_state_ttl=0, disable_web_page_preview=None, reply_to_message_id=None, reply_markup=None, parse_mode=None, disable_notification=None, timeout=None):
-
+        """
+            :when: - Дата и время, когда сообщение должно быть отправлено. если не заполнено отправляется немеделенно
+            :new_state: - состоения в которое должен перейти чат после отправки
+            :new_state_ttl: - срок жизни нового состояния в секундах. если не установлено - сутки
+            :reply_markup: - клавиатура для ответа. Можно собрать руками, но проще используя класс  ReplyKeyboard
+        """
         if not when is None:
             self.store.put_message_in_queue(
                 chat_id=chat_id,

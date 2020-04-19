@@ -20,48 +20,17 @@ chatbot.py - библиотека для разработки чатботов (
 - __init__() - конструктор объекта
     - token - токен бота
     - session_store = None - хранилище данных, если не передается создается собственное
-    - threads = 0 - количество потоков для работы. Если 0 бот работает без потоков
-    - proxy = [] - настройки прокси для работы на территории РФ :)
     - skip_pending = True - игнорировать пропущенные сообщения
 - send_message() - отправить сообщение пользователю
     - chat_id - идентификатор пользователя (чата)
     - message - текст сообщения
-    - new_stage=None
-    - stage_ttl=None 
-    - disable_web_page_preview=None, 
-    - reply_to_message_id=None, 
-    - reply_markup=None,
-    - parse_mode=None,
-    - disable_notification=None, 
-    - timeout=None
-- run() - запустить бота
+    - new_stage - если сообщение отправлено - диалог перейдет в это состояние
+    - new_stage_ttl - срок жизни нового состояния. если не установлен - состояние живет сутки
+    - reply_markup - клавиатура для ответа пользователем, можно собрать руками, но проще с помощью класса ReplyKeyboard
+- start() - запустить бота
 - stop() - остановить бота
-@bot.on_message(filters)=>stop - обработчик сообщения от пользователя
-    def do_something(bot, message, session)    
-@bot.on_fire(filters)=>stop - обработчик ожидания
-    def do_something(bot, fire_count, session)    
+@bot.register_event_handler(states=None, events=None):=>stop - обработчик сообщения от пользователя
+    def do_something(message)    
+@bot.register_message_handler(self, commands=None, regexp=None, func=None, states=None, content_types=['text'])=>stop - обработчик ожидания
+    def do_something(event)    
 
-filters:
-- commands
-- stages
-- regexp
-- func
-- content_type
-
-## Bot_Session_Store
-- __init__()
-- get_locals_by_id()=>Dict
-    - id
-- set_locals_by_id()
-    - id
-    - locals=None
-- set_new_stage()
-    - id
-    - new_stage
-    - time_to_expire=0
-- drop_stage()
-    - id
-- get_chats_with_expired_stages()=>[]
-    - id
-- get_pending_messages()=>[message]
-    - id

@@ -66,7 +66,7 @@ class SessionStore:
         if ttl>0:
             new_state_ttl = datetime.now() + timedelta(seconds=ttl)
         else:
-            new_state_ttl = None
+            new_state_ttl = datetime.now() + timedelta(days=1)
             
         query = {'chat_id':chat_id}
         record = self.sessions.find_one(query)
