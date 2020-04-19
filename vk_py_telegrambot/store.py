@@ -170,3 +170,18 @@ class SessionStore:
             self.db = None
             logger.debug('mongoclient was shuting down....')
 
+    def save_phone(self, chat_id, phone):
+        ud = self.sessions.find_one({'chat_id' : chat_id})
+        if not ud:
+            self.sessions.insert_one({
+                "chat_id"       : chat_id,
+                "context"       : {},
+                "stage"         : None,
+                "stage_expired" : None,
+                "phone_number"  : phone         
+            })
+        else:
+            self.sessions.find_one_and_update(
+                filter={'chat_id':chat_id},
+                update={'$set':{'phone':phone}}
+            )

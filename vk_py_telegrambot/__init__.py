@@ -21,12 +21,16 @@ logger.addHandler(console_output_handler)
 class User:
     def __init__(self, source:dict):
         self.chat_id = source['id']
-        self.name = source['username']
         self.first_name = source['first_name']
         self.language_code = source['language_code']
+        if 'username' in source:
+            self.name = source['username']
+        else:
+            self.name = source['first_name']
         self.context = {}
         self.state = ''
         self.store = None
+        self.phone_number = None
 
     def load_context (self, store:SessionStore):
         self.store = store
@@ -47,6 +51,9 @@ class User:
 
         if not self.store is None:
             self.store.set_locals_by_id(self.chat_id, self.context)
+
+    def save_phone(self, phone_number):
+        self.store.save_phone(chat_id=self.chat_id, phone=phone_number)
 
 class ReplyKeyboard:
     def __init__(self):
@@ -87,6 +94,13 @@ class Message:
         self.user = User(source['from'])
         self.content_type = None
         self.command = None
+        self.contact = None
+        self.audio = None
+        self.animation = None
+        self.photo = None
+        self.sticker = None
+        self.game = None
+        self.text = ''
         if 'froward_from' in source:        
             self.forward_from = User(source['forward_from'])
         if 'text' in source:                
@@ -98,16 +112,26 @@ class Message:
                 self.command = command
         if 'audio' in source:
             self.content_type='audio'
+            self.audio = source['audio']
         if 'animation' in source:
             self.content_type='animation'
+            self.animation = source['animation']
         if 'document' in source:
             self.content_type='document'
+            self.document = source['document']
         if 'game' in source:
             self.content_type='game'
+            self.game = source['game']
         if 'photo' in source:
             self.content_type='photo'
+            self.photo = source['photo']
         if 'sticker' in source:
             self.content_type='sticker'
+            self.sticker = source['sticker']
+        if 'contact' in source:
+            self.content_type='contact'
+            self.contact = source['contact']
+
 
 
 
@@ -175,7 +199,10 @@ class MessageHandler:
         
         if not self.test_func is None:
             if not self.test_func(message):
-                return False   
+                return False
+
+        if not message.content_type in self.content_types:
+            return False
 
         stop = self.func(message)
         return stop
