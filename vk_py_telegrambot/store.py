@@ -139,24 +139,18 @@ class SessionStore:
 
         return queue
 
-    def put_message_in_queue(self, chat_id, text, when, new_state=None, new_state_ttl=0,disable_web_page_preview=None, reply_to_message_id=None, reply_markup=None, parse_mode=None, disable_notification=None, timeout=None):
+    def put_message_in_queue(self, chat_id, message, when, new_state=None, reply_markup=None):
         if when < datetime.now():
             logger.warn('Попытка отправить отложенное сообщение которое уже просроченно')
 
         el = {
-            'text' : text,
+            'message' : message,
             'fire_date' : when,
             'chat_id' : chat_id,
-            'new_state' : new_state,
-            'new_state_ttl' : new_state_ttl,
+            'new_state' : new_state[0],
+            'new_state_ttl' : new_state[1],
             'is_active' : True,
-            'disable_web_page_preview' : disable_web_page_preview,
-            'reply_to_message_id' : reply_to_message_id,
             'reply_markup' : reply_markup,
-            'parse_mode' : parse_mode,
-            'disable_notification' : disable_notification,
-            'timeout' : timeout
-
         }
         self.pending_queue.insert_one(el)
 

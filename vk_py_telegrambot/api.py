@@ -98,7 +98,7 @@ def get_me(token):
     return _make_request(token, method_url)
 
 def send_message(token, chat_id, text, disable_web_page_preview=None, reply_to_message_id=None, reply_markup=None,
-                 parse_mode=None, disable_notification=None, timeout=None):
+                 parse_mode=None, disable_notification=None, timeout=None, *args, **kwargs):
     """
     Use this method to send text messages. On success, the sent Message is returned.
     :param token:

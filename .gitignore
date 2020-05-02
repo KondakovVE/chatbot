@@ -1,7 +1,7 @@
 .venv/
 .vscode/
 .DS_STORE
-chatbot/__pycache__/
+vk_py_telegrambot/__pycache__/
 pyvenv.cfg
 test_bot.py
 dist/
