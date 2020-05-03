@@ -2,5 +2,8 @@
 setup.cfg
 setup.py
 vk_py_telegrambot/__init__.py
+vk_py_telegrambot/api.py
+vk_py_telegrambot/bot.py
 vk_py_telegrambot/store.py
-vk_py_telegrambot/telegramapi.py
+vk_py_telegrambot/types.py
+vk_py_telegrambot/users.py

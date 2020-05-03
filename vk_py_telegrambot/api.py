@@ -97,57 +97,16 @@ def get_me(token):
     method_url = r'getMe'
     return _make_request(token, method_url)
 
-def send_message(token, chat_id, text, disable_web_page_preview=None, reply_to_message_id=None, reply_markup=None,
-                 parse_mode=None, disable_notification=None, timeout=None, *args, **kwargs):
-    """
-    Use this method to send text messages. On success, the sent Message is returned.
-    :param token:
-    :param chat_id:
-    :param text:
-    :param disable_web_page_preview:
-    :param reply_to_message_id:
-    :param reply_markup:
-    :param parse_mode:
-    :param disable_notification:
-    :return:
-    """
-    method_url = r'sendMessage'
-    payload = {'chat_id': str(chat_id), 'text': text}
-    if disable_web_page_preview:
-        payload['disable_web_page_preview'] = disable_web_page_preview
-    if reply_to_message_id:
-        payload['reply_to_message_id'] = reply_to_message_id
-    if reply_markup:
-        payload['reply_markup'] = reply_markup
-    if parse_mode:
-        payload['parse_mode'] = parse_mode
-    if disable_notification:
-        payload['disable_notification'] = disable_notification
-    if timeout:
-        payload['connect-timeout'] = timeout
-    return _make_request(token, method_url, params=payload, method='post')
+def send_message(token, chat_id, message):
+    _message = message.message
+    _message['chat_id']=chat_id
+    if 'text' in _message:
+        method_url = r'sendMessage'
+        return _make_request(token, method_url, params=_message, method='post')
 
-def send_photo(token, chat_id, photo, caption=None, reply_to_message_id=None, reply_markup=None,
-               parse_mode=None, disable_notification=None):
-    method_url = r'sendPhoto'
-    payload = {'chat_id': chat_id}
-    files = None
-    if not isinstance(photo, str):
-        files = {'photo': photo}
-    else:
-        payload['photo'] = photo
-    if caption:
-        payload['caption'] = caption
-    if reply_to_message_id:
-        payload['reply_to_message_id'] = reply_to_message_id
-    if reply_markup:
-        payload['reply_markup'] = _convert_markup(reply_markup)
-    if parse_mode:
-        payload['parse_mode'] = parse_mode
-    if disable_notification:
-        payload['disable_notification'] = disable_notification
-    return _make_request(token, method_url, params=payload, files=files, method='post')
-
+    if 'photo' in _message:
+        method_url = r'sendPhoto'
+        return _make_request(token, method_url, params=_message, method='post')
 
 def get_updates(token, offset=None, limit=None, timeout=None, allowed_updates=None):
     method_url = r'getUpdates'
@@ -191,7 +150,7 @@ def answer_callback_query(token, callback_query_id, text=None, show_alert=None, 
 def answer_inline_query(token, inline_query_id, results, cache_time=None, is_personal=None, next_offset=None,
                         switch_pm_text=None, switch_pm_parameter=None):
     method_url = 'answerInlineQuery'
-    payload = {'inline_query_id': inline_query_id, 'results': _convert_list_json_serializable(results)}
+    payload = {'inline_query_id': inline_query_id, 'results': results}
     if cache_time is not None:
         payload['cache_time'] = cache_time
     if is_personal:
@@ -203,22 +162,6 @@ def answer_inline_query(token, inline_query_id, results, cache_time=None, is_per
     if switch_pm_parameter:
         payload['switch_pm_parameter'] = switch_pm_parameter
     return _make_request(token, method_url, params=payload, method='post')
-
-def _convert_markup(markup):
-    # if isinstance(markup, types.JsonSerializable):
-    #     return markup.to_json()
-    # return markup
-    return []
-
-def _convert_list_json_serializable(results):
-    # ret = ''
-    # for r in results:
-    #     if isinstance(r, types.JsonSerializable):
-    #         ret = ret + r.to_json() + ','
-    # if len(ret) > 0:
-    #     ret = ret[:-1]
-    # return '[' + ret + ']'
-    return []
 
 def _no_encode(func):
     def wrapper(key, val):

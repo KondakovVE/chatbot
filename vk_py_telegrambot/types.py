@@ -11,7 +11,7 @@ message_content_types = {
     'contact'
 }
 
-class Message:
+class MessageFromUser:
     def __init__(self, source:dict):
         self.message_id = source['message_id']
         self.content_type = None
@@ -52,23 +52,45 @@ class Message:
             self.content_type='contact'
             self.contact = source['contact']
 
+class MessageToUser:
+    def __init__(self, user, text=None, reply_markup=None, when=None, photo=None, document = None ,new_state=None):
+        self.user = user
+        self.message = {}
+        if text: self.message['text'] = text
+        if photo: self.message['photo'] = photo
+        if document: self.message['document'] = document
+        if reply_markup: self.message['reply_markup'] = reply_markup
+        if new_state:
+            self.new_state = new_state
+        else: 
+            self.new_state = None
+        if when:
+            self.when = when
+        else: 
+            self.when = None
+        
+
 class ReplyKeyboard:
-    def __init__(self):
+    def __init__(self, remove_keyboard=False, resize_keyboard=False, one_time_keyboard=False, is_inline=False):
         self.rows=[[]]
-        self.remove_keyboard = False
-        self.resize_keyboard = False
-        self.one_time_keyboard = False
+        self.remove_keyboard = remove_keyboard
+        self.resize_keyboard = resize_keyboard
+        self.one_time_keyboard = one_time_keyboard
+        self.inline = is_inline
         pass
     
     def clear(self):
         self.rows = [[]]
 
-    def add_button(self, name, row, request_contact=False,request_location=False):
+    def add_button(self, name, row, request_contact=False, request_location=False, callback=None):
         button = {
             'text' : name,
             'request_contact' : request_contact,
             'request_location' : request_location
         }
+        if self.inline and not callback is None:
+            button['callback_data']=callback
+
         self.rows[row].append(button)
         pass
 
